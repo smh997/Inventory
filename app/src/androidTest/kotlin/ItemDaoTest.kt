@@ -1,3 +1,4 @@
+
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -6,6 +7,7 @@ import com.example.inventory.data.InventoryDatabase
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemDao
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -14,7 +16,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
-import kotlin.jvm.Throws
 
 @RunWith(AndroidJUnit4::class)
 class ItemDaoTest {
@@ -79,6 +80,14 @@ class ItemDaoTest {
         itemDao.delete(item2)
         val allItems = itemDao.getAllItems().first()
         assertTrue(allItems.isEmpty())
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun daoGetItem_returnsItemFromDB() = runBlocking {
+        addOneItemToDb()
+        val item = itemDao.getItem(1).firstOrNull()
+        assertEquals(item, item1)
     }
 
     @After
